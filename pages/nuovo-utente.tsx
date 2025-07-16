@@ -19,33 +19,32 @@ export default function NuovoUtente() {
   };
 
   const salvaUtente = async () => {
-    setCaricamento(true);
+  setCaricamento(true);
 
-    try {
-      const res = await fetch("https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/utenti", {
-        method: "POST",
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation"
-        },
-        body: JSON.stringify(form)
-      });
+  const res = await fetch("https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/utenti", {
+    method: "POST",
+    headers: {
+      apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+      "Content-Type": "application/json",
+      Prefer: "return=representation"
+    },
+    body: JSON.stringify(form)
+  });
 
-      const dati = await res.json();
-      if (dati[0]?.id) {
-        setIdUtente(dati[0].id); // Token generato da Supabase
-      } else {
-        alert("Errore nella registrazione utente.");
-      }
-    } catch (error) {
-      console.error("Errore nella chiamata API", error);
-      alert("Errore durante il salvataggio.");
-    }
+  const data = await res.json();
 
+  if (!res.ok) {
+    console.error("Errore:", data);
+    alert("Errore nel salvataggio utente");
     setCaricamento(false);
-  };
+    return;
+  }
+
+  setIdUtente(data[0].id);
+  setCaricamento(false);
+};
+
 
   if (idUtente) {
     return (
