@@ -1,0 +1,1 @@
+Cartella pubblica per asset statici
