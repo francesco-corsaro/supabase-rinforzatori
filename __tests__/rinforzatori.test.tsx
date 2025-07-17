@@ -1,13 +1,28 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import Rinforzatori from '../components/Rinforzatori';
+import { supabase } from '../lib/supabase';
+
+jest.mock('../lib/supabase', () => ({
+  supabase: { from: jest.fn() }
+}));
 
 describe('Rinforzatori component', () => {
   it('adds a new reinforcement to the list', async () => {
-    const fetchMock = jest.fn()
-      .mockResolvedValueOnce({ json: async () => [] })
-      .mockResolvedValueOnce({ json: async () => [{ id: '1', nome: 'Biscotto', emoji: '🌭' }] });
-    // @ts-ignore
-    global.fetch = fetchMock;
+    const fromMock = jest.fn().mockReturnValue({
+      insert: jest.fn().mockReturnValue({
+        select: jest.fn().mockReturnValue({
+          single: jest.fn().mockResolvedValue({
+            data: { id: '1', nome: 'Biscotto', emoji: '🌭' },
+            error: null
+          })
+        })
+      }),
+      select: jest.fn().mockReturnValue({
+        eq: jest.fn().mockResolvedValue({ data: [], error: null })
+      })
+    });
+
+    (supabase.from as jest.Mock) = fromMock as any;
 
     render(<Rinforzatori />);
 
