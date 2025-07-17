@@ -22,19 +22,13 @@ export default function NuovoUtente() {
     setCaricamento(true);
 
     try {
-      const res = await fetch(
-        "https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/utenti",
-        {
-          method: "POST",
-          headers: {
-            apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-            Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation",
-          },
-          body: JSON.stringify(form),
-        }
-      );
+      const res = await fetch("/api/utenti", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(form),
+      });
 
       const data = await res.json();
 
@@ -45,7 +39,7 @@ export default function NuovoUtente() {
         return;
       }
 
-      setIdUtente(data[0].id);
+      setIdUtente(data.id);
     } catch (err) {
       console.error("Errore nel salvataggio:", err);
       alert("Errore nel salvataggio utente");
