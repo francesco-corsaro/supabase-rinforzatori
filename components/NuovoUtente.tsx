@@ -22,7 +22,10 @@ export default function NuovoUtente() {
     setCaricamento(true);
     // Simulazione inserimento in Supabase: genera ID fittizio
     await new Promise((res) => setTimeout(res, 1000));
-    const fakeId = crypto.randomUUID();
+    const fakeId =
+      typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+        ? crypto.randomUUID()
+        : Math.random().toString(36).slice(2);
     setIdUtente(fakeId);
     setCaricamento(false);
   };
