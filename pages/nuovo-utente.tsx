@@ -19,31 +19,42 @@ export default function NuovoUtente() {
   };
 
   const salvaUtente = async () => {
-  setCaricamento(true);
+    setCaricamento(true);
 
-  const res = await fetch("https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/utenti", {
-    method: "POST",
-   headers: {
-  apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-  Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-  "Content-Type": "application/json",
-  Prefer: "return=representation"
-  },
-    body: JSON.stringify(form)
-  });
+    try {
+      const res = await fetch(
+        "https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/utenti",
+        {
+          method: "POST",
+          headers: {
+            apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+            Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+          },
+          body: JSON.stringify(form),
+        }
+      );
 
-  const data = await res.json();
+      const data = await res.json();
 
-  if (!res.ok) {
-    console.error("Errore:", data);
-    alert("Errore nel salvataggio utente");
+      if (!res.ok) {
+        console.error("Errore:", data);
+        alert("Errore nel salvataggio utente");
+        setCaricamento(false);
+        return;
+      }
+
+      setIdUtente(data[0].id);
+    } catch (err) {
+      console.error("Errore nel salvataggio:", err);
+      alert("Errore nel salvataggio utente");
+      setCaricamento(false);
+      return;
+    }
+
     setCaricamento(false);
-    return;
-  }
-
-  setIdUtente(data[0].id);
-  setCaricamento(false);
-};
+  };
 
 
   if (idUtente) {
