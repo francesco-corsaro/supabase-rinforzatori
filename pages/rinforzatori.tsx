@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 type Rinforzatore = {
   id: string;
@@ -18,31 +19,20 @@ export default function Rinforzatori() {
     setCaricamento(true);
 
     try {
-      const res = await fetch("https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/rinforzatori", {
-        method: "POST",
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-          "Content-Type": "application/json",
-          Prefer: "return=representation"
-        },
-        body: JSON.stringify({
-          id_utente: token,
-          nome,
-          emoji
-        })
-      });
+      const { data, error } = await supabase
+        .from("rinforzatori")
+        .insert({ id_utente: token, nome, emoji })
+        .select()
+        .single();
 
-      const dati = await res.json();
-
-      if (!Array.isArray(dati)) {
-        console.error("Risposta inattesa dal salvataggio:", dati);
+      if (error || !data) {
+        console.error("Errore nel salvataggio:", error);
         alert("Errore nel salvataggio");
         setCaricamento(false);
         return;
       }
 
-      setLista([...lista, dati[0]]);
+      setLista([...lista, data]);
       setNome("");
     } catch (err) {
       console.error("Errore nel salvataggio:", err);
@@ -55,22 +45,18 @@ export default function Rinforzatori() {
     if (!token) return;
 
     try {
-      const res = await fetch(`https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/rinforzatori?id_utente=eq.${token}`, {
-        headers: {
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-          Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`
-        }
-      });
+      const { data, error } = await supabase
+        .from("rinforzatori")
+        .select()
+        .eq("id_utente", token);
 
-      const dati = await res.json();
-
-      if (!Array.isArray(dati)) {
-        console.warn("Dati ricevuti non validi:", dati);
+      if (error) {
+        console.error("Errore nel caricamento:", error);
         setLista([]);
         return;
       }
 
-      setLista(dati);
+      setLista(Array.isArray(data) ? data : []);
     } catch (err) {
       console.error("Errore nel caricamento:", err);
       setLista([]);

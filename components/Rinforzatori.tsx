@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 type Rinforzatore = {
   id: string;
@@ -17,37 +18,36 @@ export default function Rinforzatori() {
     if (!token || !nome) return alert("Inserisci token e nome");
     setCaricamento(true);
 
-    const res = await fetch("https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/rinforzatori", {
-      method: "POST",
-      headers: {
-        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-        "Content-Type": "application/json",
-        Prefer: "return=representation"
-      },
-      body: JSON.stringify({
-        id_utente: token,
-        nome,
-        emoji
-      })
-    });
+    const { data, error } = await supabase
+      .from("rinforzatori")
+      .insert({ id_utente: token, nome, emoji })
+      .select()
+      .single();
 
-    const dati = await res.json();
-    setLista([...lista, dati[0]]);
-    setNome("");
+    if (!error && data) {
+      setLista([...lista, data]);
+      setNome("");
+    } else {
+      console.error("Errore nel salvataggio:", error);
+    }
+
     setCaricamento(false);
   };
 
   const caricaEsistenti = async () => {
     if (!token) return;
-    const res = await fetch(`https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/rinforzatori?id_utente=eq.${token}`, {
-      headers: {
-        apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-      },
-    });
-    const dati = await res.json();
-    setLista(dati);
+
+    const { data, error } = await supabase
+      .from("rinforzatori")
+      .select()
+      .eq("id_utente", token);
+
+    if (!error && Array.isArray(data)) {
+      setLista(data);
+    } else {
+      console.error("Errore nel caricamento:", error);
+      setLista([]);
+    }
   };
 
   useEffect(() => {
