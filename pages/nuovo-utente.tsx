@@ -23,12 +23,12 @@ export default function NuovoUtente() {
 
   const res = await fetch("https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/utenti", {
     method: "POST",
-    headers: {
-      apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
-      "Content-Type": "application/json",
-      Prefer: "return=representation"
-    },
+   headers: {
+  apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+  Authorization: `Bearer ${process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!}`,
+  "Content-Type": "application/json",
+  Prefer: "return=representation"
+  },
     body: JSON.stringify(form)
   });
 
