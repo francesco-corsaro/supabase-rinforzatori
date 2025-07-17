@@ -10,7 +10,7 @@ valore di `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 
 ```bash
 cp .env.example .env.local
-echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=la-tua-chiave" >> .env.local
+echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=la-tua-chiave" >> .env.local FATTO!
 ```
 
 ## Running Tests
