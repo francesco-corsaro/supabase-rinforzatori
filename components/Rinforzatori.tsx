@@ -17,6 +17,13 @@ export default function Rinforzatori() {
     if (!token || !nome) return alert("Inserisci token e nome");
     setCaricamento(true);
 
+    if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error("NEXT_PUBLIC_SUPABASE_ANON_KEY non è definita");
+      alert("Configurare la chiave anon di Supabase in .env.local");
+      setCaricamento(false);
+      return;
+    }
+
     const res = await fetch("https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/rinforzatori", {
       method: "POST",
       headers: {
@@ -40,6 +47,12 @@ export default function Rinforzatori() {
 
   const caricaEsistenti = async () => {
     if (!token) return;
+
+    if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error("NEXT_PUBLIC_SUPABASE_ANON_KEY non è definita");
+      alert("Configurare la chiave anon di Supabase in .env.local");
+      return;
+    }
     const res = await fetch(`https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/rinforzatori?id_utente=eq.${token}`, {
       headers: {
         apikey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,

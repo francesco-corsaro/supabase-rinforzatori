@@ -3,6 +3,9 @@ import Rinforzatori from '../components/Rinforzatori';
 
 describe('Rinforzatori component', () => {
   it('adds a new reinforcement to the list', async () => {
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = 'test';
+    // @ts-ignore
+    global.alert = jest.fn();
     const fetchMock = jest.fn()
       .mockResolvedValueOnce({ json: async () => [] })
       .mockResolvedValueOnce({ json: async () => [{ id: '1', nome: 'Biscotto', emoji: '🌭' }] });
