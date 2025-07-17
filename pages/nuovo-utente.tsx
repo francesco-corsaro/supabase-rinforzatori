@@ -21,6 +21,13 @@ export default function NuovoUtente() {
   const salvaUtente = async () => {
     setCaricamento(true);
 
+    if (!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY) {
+      console.error("NEXT_PUBLIC_SUPABASE_ANON_KEY non è definita");
+      alert("Configurare la chiave anon di Supabase in .env.local");
+      setCaricamento(false);
+      return;
+    }
+
     try {
       const res = await fetch(
         "https://mcrrafxlbcolkpfwlvzz.supabase.co/rest/v1/utenti",
